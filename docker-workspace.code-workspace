@@ -1,0 +1,34 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": 
+	{
+		"python.analysis.extraPaths": [
+		"./ur_control/src",
+		"./ur3_gazebo/src",
+		"./ur3e_openai/src",
+		"./ur3e_rl/src",
+		"./pylibs/tf2rl",
+		],
+		"files.exclude": {
+			"**/**.pyc": true
+		},
+		"cSpell.words": [
+			"interp",
+			"mtype",
+			"openai",
+			"pyquaternion",
+			"rospy",
+			"spalg"
+		],
+		"python.formatting.autopep8Args": [
+			"--max-line-length",
+			"120",
+			"--experimental"
+		  ]
+		
+	}
+}

@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+  <model name="spring">
+    <!-- <static>true</static> -->
+    <pose>0 0 0.02 0 0 0</pose>
+    <link name="tip_link">
+      <inertial>
+        <inertia>
+          <ixx>0.01</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.01</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.01</izz>
+        </inertia>
+        <mass>1.0</mass>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.03</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script><uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/GreyTransparent</name></script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.03</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="joint" type="prismatic">
+      <parent>tip_link</parent>
+      <child>link1</child>
+      <pose>0 0 0 0 0 0</pose>
+      <axis>
+        <limit>
+          <lower>0.00</lower>
+          <upper>0.025</upper>
+        </limit>
+        <xyz>0.0 0.0 1.0</xyz>
+        <dynamics>
+          <spring_stiffness>-200</spring_stiffness>
+          <spring_reference>-0.025</spring_reference>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+        </dynamics>
+      </axis>
+    </joint>
+    
+    <link name="link1">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <inertia>
+          <ixx>0.01</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.01</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.01</izz>
+        </inertia>
+        <mass>0.1</mass>
+      </inertial>
+      <visual name="visual">
+        <pose>0 0 0.015 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/RedTransparent</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <pose>0 0 0.015 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode> 
+              <kp>1e5</kp> 
+              <kd>1</kd> 
+              <max_vel>100.0</max_vel> 
+              <min_depth>0.001</min_depth> 
+            </ode> 
+          </contact> 
+        </surface> 
+      </collision>
+    </link>
+
+    <joint name="joint2" type="prismatic">
+      <parent>link1</parent>
+      <child>link2</child>
+      <pose>0 0 0 0 0 0</pose>
+      <axis>
+        <limit>
+          <lower>-0.00</lower>
+          <upper>0.035</upper>
+        </limit>
+        <xyz>0.0 0.0 1.0</xyz>
+        <dynamics>
+          <spring_stiffness>-200</spring_stiffness>
+          <spring_reference>-0.02</spring_reference>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <link name="link2">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <inertia>
+          <ixx>0.01</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.01</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.01</izz>
+        </inertia>
+        <mass>0.1</mass>
+      </inertial>
+      <visual name="visual">
+        <pose>0 0 0.02 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/GreenTransparent</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <pose>0 0 0.02 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode> 
+              <kp>1e5</kp> 
+              <kd>1</kd> 
+              <max_vel>100.0</max_vel> 
+              <min_depth>0.001</min_depth> 
+            </ode> 
+          </contact> 
+        </surface> 
+      </collision>
+    </link>
+
+    <joint name="joint3" type="prismatic">
+      <parent>link2</parent>
+      <child>link3</child>
+      <pose>0 0 0 0 0 0</pose>
+      <axis>
+        <limit>
+          <lower>-0.00</lower>
+          <upper>0.04</upper>
+        </limit>
+        <xyz>0.0 0.0 1.0</xyz>
+        <dynamics>
+          <spring_stiffness>-200</spring_stiffness>
+          <spring_reference>-0.02</spring_reference>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <link name="link3">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <inertia>
+          <ixx>0.01</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.01</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.01</izz>
+        </inertia>
+        <mass>0.1</mass>
+      </inertial>
+      <visual name="visual">
+        <pose>0 0 0.02 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/RedTransparent</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <pose>0 0 0.02 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode> 
+              <kp>1e5</kp> 
+              <kd>1</kd> 
+              <max_vel>100.0</max_vel> 
+              <min_depth>0.001</min_depth> 
+            </ode> 
+          </contact> 
+        </surface> 
+      </collision>
+    </link>
+  </model>
+</sdf>

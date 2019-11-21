@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ur3_gazebo</name>
+  <version>0.1.2</version>
+  <description>
+    Gazebo simulation for the UR5 robot with a robotiq gripper
+  </description>
+
+  <author email="beltran@hlab.sys.es.osaka-u.ac.jp">Cristian C Beltran-Hernandez</author>
+  <maintainer email="beltran@hlab.sys.es.osaka-u.ac.jp">Cristian C Beltran-Hernandez</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>ur3_description</exec_depend>
+  <exec_depend>robotiq_gazebo</exec_depend>
+  <exec_depend>gazebo</exec_depend>
+
+  <export>
+      <gazebo gazebo_media_path="${prefix}" />
+  </export>
+
+</package>

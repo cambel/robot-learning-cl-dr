@@ -1,0 +1,28 @@
+- git:
+    local-name: robotiq
+    uri: https://github.com/cambel/robotiq.git
+    version: melodic-devel
+- git:  
+    local-name: gazebo_ros_link_attacher
+    uri: https://github.com/pal-robotics/gazebo_ros_link_attacher.git
+    version: melodic-devel
+- git:  
+    local-name: robotiq_urcap_control
+    uri: https://github.com/cambel/ros_robotiq_urcap_control.git
+    version: master
+- git:  
+    local-name: Universal_Robots_ROS_Driver
+    uri: https://github.com/UniversalRobots/Universal_Robots_ROS_Driver.git
+    version: master
+- git:  
+    local-name: trac_ik
+    uri: https://bitbucket.org/traclabs/trac_ik.git
+    version: master
+- git:  
+    local-name: universal_robot
+    uri: https://github.com/fmauch/universal_robot.git
+    version: 1ffdd69181389b14b7d6342f0c5bad3b45c5e32f
+- git:
+    local-name: ur_msgs
+    uri:  https://github.com/ros-industrial/ur_msgs.git
+    version: melodic-devel

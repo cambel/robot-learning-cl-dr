@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="kinematics_config_filename" default="left" />
+  <arg name="kinemetics_config_path" default="$(find ur_control)/config/my_robot_calibration-$(arg kinematics_config_filename).yaml"/>
+  <arg name="kinematics_config" default="$(arg kinemetics_config_path)" doc="Kinematics config file used for calibration correction. This will be used to verify the robot's calibration is matching the robot_description."/>
+  <rosparam param="cambel" subst_value="True">$(arg kinematics_config)</rosparam>
+  <include file="$(find ur_robot_driver)/launch/ur3e_bringup.launch" pass_all_args="true"/>
+</launch>
