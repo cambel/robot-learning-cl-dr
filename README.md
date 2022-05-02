@@ -1,5 +1,6 @@
 # Gazebo Gym Environment for learning force control with peg insertion tasks (Universal Robots)
 
+This repository is based on our public repositories [ur3](https://github.com/cambel/ur3) and [ur_openai_gym](https://github.com/cambel/ur_openai_gym).
 
 ## Installation
 Tested on ROS Melodic - Ubuntu 18.04
