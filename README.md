@@ -62,3 +62,6 @@ If you find this code useful, consider citing our work:
   copyright = {Creative Commons Attribution Non Commercial No Derivatives 4.0 International}
 }
 ```
+ArXiv: https://arxiv.org/abs/2204.12844
+
+Supplemental Video: https://youtu.be/_FVQC5OcGjs
