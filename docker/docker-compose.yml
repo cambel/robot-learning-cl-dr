@@ -23,7 +23,7 @@ services:
       - DOCKER_RUNTIME=${DOCKER_RUNTIME}
       # Needs to be explicitly define
       - ROS_HOSTNAME=localhost
-    image: glozzom:melodic-gazebo
+    image: glozzom:noetic-gazebo
     tty: true
     build:
       context: ../

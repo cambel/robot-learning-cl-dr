@@ -2,139 +2,81 @@
 # ros-melodic-base, gazebo9, gps, python libraries 
 # Python 3 version
 
-ARG UBUNTU_VERSION=18.04
+ARG UBUNTU_VERSION=20.04
 
-FROM tensorflow/tensorflow:latest-gpu-py3
+FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu20.04
 LABEL maintainer Cristian C Beltran-Hernandez "beltran@hlab.sys.es.osaka-u.ac.jp"
 
-#### Use an official ROS runtime as a parent image
+# Avoid user interaction during install of tzdata
+# https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
+ENV TZ=Asia
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 
-RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/3bf863cc.pub
-# setup timezone
-RUN echo 'Etc/UTC' > /etc/timezone && \
-    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
-    apt-get update && apt-get install -q -y tzdata 
+# Install ROS Noetic Ninjemys.
+# http://wiki.ros.org/noetic/Installation/Ubuntu
+
+# install packages
+RUN apt-get update && apt-get install -q -y --no-install-recommends \
+    dirmngr \
+    gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
 
 # setup sources.list
-RUN echo "deb http://packages.ros.org/ros/ubuntu bionic main" > /etc/apt/sources.list.d/ros1-latest.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
 
 # setup keys
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 
-# install bootstrap tools
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    python-rosdep \
-    python-rosinstall \
-    python-vcstools    
-
 # setup environment
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
-# bootstrap rosdep
-RUN rosdep init \
-    && rosdep update
+ENV ROS_DISTRO=noetic
 
 # install ros packages
-ENV ROS_DISTRO melodic
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-$ROS_DISTRO-ros-core \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV python=python3
+ENV pip=pip3
+
+# Install ROS-desktop-full packages (including ROS, rqt, rviz, and more).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-desktop-full \
+    python-is-python3 \
+    python3-rosdep \
+    python3-rosinstall \
+    python3-rosinstall-generator \
+    python3-wstool \
+    python3-pip \
+    build-essential \
+	&& rm -rf /var/lib/apt/lists/*
+
+# install additional packages
 RUN apt-get update && apt-get install -y \
-    ros-melodic-ros-core
-
-
-# install ros packages
-RUN apt-get install -y \
-    ros-melodic-ros-base
-
-
-# install universal robot ros packages
-RUN apt-get install -y \
-    ros-$ROS_DISTRO-gazebo-ros-pkgs \
-    ros-$ROS_DISTRO-rqt-common-plugins \
-    # install catkin
-    ros-$ROS_DISTRO-catkin \
-    python-catkin-tools \
-    # Install Numpy Boost
-    libboost-dev \
-    libboost-python-dev \
-    libboost-system-dev \
-    libboost-all-dev \
-    libatlas-base-dev \
-    libprotobuf-dev \
-    protobuf-compiler \
-    # python dependencies
-    python-setuptools \
-    python3-tk \
-    python3-numpy \
+    ros-$ROS_DISTRO-spacenav-node \
+    python3-catkin-tools \
     # utils
+    git \
     locate \
     aptitude \
-    vim htop \
+    vim htop tmux \
     curl wget \
-    tk \
-    spacenavd
-
+    spacenavd \
+    && rm -rf /var/lib/apt/lists/*
 
 ## Python libraries ##
-RUN python -m pip install pip --upgrade && \
-    pip install \
-    matplotlib==2.2.3 \
-    spicy \
-    protobuf \
-    pyyaml \
-    pyquaternion \
-    rospkg \
-    lxml \
-    tqdm \
-    catkin-pkg \
-    empy \
-    PyVirtualDisplay \
-    defusedxml \
-    gym \
-    psutil \
-    pyprind
+RUN python3 -m pip install pip --upgrade && \
+    pip install matplotlib==2.2.3 spicy protobuf pyyaml pyquaternion rospkg \
+    lxml tqdm catkin-pkg empy PyVirtualDisplay defusedxml gym psutil pyprind \
+    xmltodict imageio IPython future netifaces pandas sklearn seaborn
 
-### Gazebo ###
-# setup keys
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D2486D2DD83DB69272AFE98867170598AF249743
-
-# setup sources.list
-RUN . /etc/os-release \
-    && echo "deb http://packages.osrfoundation.org/gazebo/$ID-stable `lsb_release -sc` main" > /etc/apt/sources.list.d/gazebo-latest.list
-
-ENV DEBIAN_FRONTEND noninteractive
-
-# install gazebo packages
-RUN apt-get update && apt-get install -q -y \
-    binutils \
-    mesa-utils \
-    module-init-tools \
-    x-window-system \
-    gazebo9 \
-    libgazebo9-dev
-
-
-ADD docker/orocos_kinematics_dynamics.tar.xz /root/
-
-# Install SIP 4.19.8
-ADD docker/sip-4.19.8.tar.gz /root/
-
-RUN /bin/bash -c "cd ~/ \
-    && cd sip-4.19.8 \
-    && python configure.py \
-    && make -j4 && make install"
-
-# Install PyKDL
-RUN apt update && apt -y install libeigen3-dev 
-RUN /bin/bash -c "cd ~/orocos_kinematics_dynamics/orocos_kdl \
-    && mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release .. \
-    && make -j4 && make install"
-
-RUN /bin/bash -c "cd ~/orocos_kinematics_dynamics/python_orocos_kdl \
-    && mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")  -DPYTHON_LIBRARY=$(python -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))") -DPYTHON_VERSION=3 .. \
-    && make -j4"
+RUN apt-get update && apt-get install -y \
+    python3-pymodbus \
+    python3-catkin-pkg \
+    python3-serial \
+    && rm -rf /var/lib/apt/lists/*
 
 ### Ros Workspace ###
 # Set up the workspace
@@ -145,7 +87,9 @@ RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash \
 
 # Installing repo required for homework
 RUN /bin/bash -c "cd ~/ros_ws/src \
-    && git clone https://github.com/cambel/robot-learning-cl-dr.git glozzom"
+    && git clone  -b noetic-devel https://github.com/cambel/robot-learning-cl-dr.git glozzom"
+
+RUN rosdep init
 
 # Updating ROSDEP and installing dependencies
 RUN cd ~/ros_ws \
@@ -173,12 +117,6 @@ RUN pip install xmltodict imageio IPython
 
 RUN pip install PySide2 PyQt5 transform3d
 
-# Compiling ros workspace
-RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash \
-    && cd ~/ros_ws/ \
-    && rm -rf build \
-    && catkin build -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so -DPYTHON_VERSION=3"
-
 RUN pip3 install pyserial
 
 ################################################
@@ -186,9 +124,6 @@ RUN pip3 install pyserial
 ################################################
 
 RUN pip install Cython cpprb
-
-RUN apt install -y python-pip
-RUN python2 -m pip install pyquaternion scipy Cython
 
 # fix problem with tf2rl
 RUN apt-get -qq update && \
@@ -200,17 +135,10 @@ RUN /bin/bash -c "mkdir ~/pylibs && cd ~/pylibs \
     && git clone -b dev https://github.com/cambel/tf2rl.git \
     && cd tf2rl && pip install -e ."
 
-# fix for sip
-RUN rm /usr/lib/python3/dist-packages/sip.cpython-36m-x86_64-linux-gnu.so
-# fix gazebo
-RUN apt update && apt-mark hold cuda-compat-10-1 libnvinfer-plugin6 libnvinfer6 libcudnn7 && apt upgrade -y 
-
 RUN pip install future netifaces pandas sklearn seaborn
 
 COPY docker/gazebo-gui.ini /root/.gazebo/gui.ini
 
-# fix TF for python3
-RUN pip3 install --extra-index-url https://rospypi.github.io/simple/ tf2_ros
 # fix gym
 RUN pip install gym[atari]==0.15.7
 
